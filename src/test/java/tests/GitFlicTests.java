@@ -17,61 +17,53 @@ public class GitFlicTests {
         Configuration.pageLoadStrategy = "eager";
         Configuration.timeout = 10000;
     }
-
     @BeforeEach
-    void autorization() {
+    void authorizationForm() {
         open("/auth/login");
         $("#email").setValue("testuser.freeman@gmail.com");
         $("#password").setValue("user91test24");
         $("[type=submit]").click();
     }
-
     @AfterEach
     void closedBrowser() {
         closeWindow();
     }
-
     @CsvSource(value = {
             "Java, mynewjavaproject",
             "Python, mynewpythonproject",
     })
-    @ParameterizedTest(name = "Проверка создания проекта с параметрами language и nameProject")
-    void createNewJavaProjectTest(String language, String nameProject) {
-
-        //----создаем новый проект
-        $("a[href='/project']").click();
+    @DisplayName("Тест на создание нового проекта")
+    @ParameterizedTest(name = "Проверка создания и удаления нового проекта с параметрами language и nameProject")
+    void createAndDeleteNewJavaProjectTest(String language, String nameProject) {
         $("span[class*='d-none d-md-block']").click();
-        //----Вводим данные проекта
         $("#title").setValue(nameProject);
         $("#vs1__combobox").click();
         actions().sendKeys(language).perform();
-        sleep(3000);
+        sleep(1000);
         actions().sendKeys(Keys.ENTER).perform();
         $("button.btn-success").click();
-        //----проверяем результат
         $("a[href='/project']").click();
         $(".projects").shouldHave(text("testuserfreeman/" + nameProject));
         $(".projects .align-items-center").shouldHave(text(language));
-        //-----удаляем новый проект
         open("/project/testuserfreeman/" + nameProject + "/setting");
         $("button[data-target='deleteProject']").click();
         $("#deleteProject").$("input[name='controlString']").setValue("testuserfreeman/" + nameProject);
         $("#deleteProject").$("button[class*='btn-sm']").click();
     }
-    @Disabled
-    @Test
-    void createNewTeamTest() {
-        open("https://gitflic.ru/");
-        $("[data-barba-prevent=self]").click();
-        $("#email").setValue("testuser.freeman@gmail.com");
-        $("#password").setValue("user91test24");
-        $("[type=submit]").click();
-        $("a[href='/team']").click();
-        $("span[class='d-none d-md-block']").click();
-        $("#title").setValue("My new team 1");
-        $("#description").setValue("Team new my");
-        $("[button type='submit']").click();
-        sleep(3000);
 
+    @DisplayName("Тест на изменение информации о команде")
+    @Disabled("Надо реализовать проверку изменения аватарки команды")
+    @Test
+    void createNewSettingsForTeamTest() {
+        open("/team/my-best-team-ever/setting");
+        $("#title").clear();
+        $("#title").setValue("My crazy team 40");
+        $("#description").clear();
+        $("#description").setValue("Crazy team work 40");
+        //$("#imgUploader").uploadFromClasspath("1223.jpg");
+        $("button.btn-success").click();
+        $("a[href='/team']").click();
+        $(".projects-team__list .flex-row").shouldHave(text("My crazy team 40"));
+        $(".projects-team__list .flex-row").shouldHave(text("Crazy team work 40"));
     }
 }
