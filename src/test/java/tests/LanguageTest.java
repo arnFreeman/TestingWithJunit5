@@ -28,8 +28,6 @@ public class LanguageTest {
     void podhoditLangTest(Language chooseLang) {
         open("https://podhodit.com");
         $(".lang-panel").$(byText(chooseLang.name())).click();
-        sleep(2000);
         $(".fadeInDown").shouldHave(text(chooseLang.description));
-        sleep(2000);
     }
 }
