@@ -7,7 +7,7 @@ import static com.codeborne.selenide.Condition.text;
 import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.open;
 
-public class BsiTests {
+public class Drive2ruTests {
     @ParameterizedTest
     @ValueSource(strings = {"Ford Mondeo IV", "Subaru Impreza GG"})
     void searchResultsShouldNotBeEmpty(String searchQuery) {
